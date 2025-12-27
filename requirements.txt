@@ -1,0 +1,5 @@
+shazamio>=0.2.0
+flask>=2.3.0
+pyaudio>=0.2.11
+audioop-lts>=1.4.0
+
