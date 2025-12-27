@@ -15,7 +15,7 @@ app = Flask(__name__)
 # Configuration
 CHUNK_DURATION = 10  # seconds
 MAX_SONGS = 50
-SAMPLE_RATE = 16000
+SAMPLE_RATE = 44100
 PORT = 5000
 
 # Thread-safe storage for identified songs
