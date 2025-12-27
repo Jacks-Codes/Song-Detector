@@ -13,7 +13,7 @@ from song_identifier import SongIdentifier
 app = Flask(__name__)
 
 # Configuration
-CHUNK_DURATION = 10  # seconds
+CHUNK_DURATION = 30  # seconds
 MAX_SONGS = 50
 SAMPLE_RATE = 44100
 PORT = 5000
@@ -126,6 +126,7 @@ def start_audio_capture():
         audio_capture = AudioCapture(
             chunk_duration=CHUNK_DURATION,
             sample_rate=SAMPLE_RATE
+            ,chunk_size=512
         )
         
         # Start audio capture with callback function

@@ -33,7 +33,8 @@ class SongIdentifier:
         """
         try:
             # Use Shazamio to recognize the song
-            result = await self.shazam.recognize_song(audio_file_path)
+            result = await self.shazam.recognize(audio_file_path)
+            print(f"DEBUG: Shazam result: {result}")
             
             # Check if we got a valid result with track information
             if result and 'track' in result:

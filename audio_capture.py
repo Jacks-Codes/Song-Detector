@@ -142,8 +142,9 @@ class AudioCapture:
                 
                 # Read audio data in small chunks until we have enough for the full duration
                 for _ in range(frames_per_chunk):
-                    if not self.is_recording:
-                        break  # Exit if we're told to stop
+                    if len(frames) % 50 == 0:
+                        if not self.is_recording:
+                            break  # Exit if we're told to stop
                     
                     # Read a chunk of audio data
                     data = self.stream.read(self.chunk_size, exception_on_overflow=False)
