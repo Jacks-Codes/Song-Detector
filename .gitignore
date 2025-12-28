@@ -12,6 +12,9 @@ __pycache__/
 *.wav
 *.mp3
 
+# History file (optional - remove this line if you want to commit history to git)
+songs_history.json
+
 # Environment variables
 .env
 

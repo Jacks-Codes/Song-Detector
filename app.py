@@ -13,8 +13,8 @@ from song_identifier import SongIdentifier
 app = Flask(__name__)
 
 # Configuration
-CHUNK_DURATION = 30  # seconds
-MAX_SONGS = 50
+CHUNK_DURATION = 10  # seconds
+MAX_SONGS = 50  # Only for in-memory display, JSON stores all history
 SAMPLE_RATE = 44100
 PORT = 5000
 
