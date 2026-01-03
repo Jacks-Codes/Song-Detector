@@ -14,7 +14,7 @@ from song_identifier import SongIdentifier
 app = Flask(__name__)
 
 # Configuration
-CHUNK_DURATION = 30  # seconds
+CHUNK_DURATION = 10  # seconds - shorter chunks catch song changes faster
 MAX_SONGS = 50  # Only for in-memory display, JSON stores all history
 SAMPLE_RATE = 44100
 PORT = 5000
