@@ -229,6 +229,23 @@ def api_songs():
     return jsonify(songs_json)
 
 
+@app.route('/api/songs/all')
+def api_songs_all():
+    """JSON API endpoint for all songs from JSON history."""
+    try:
+        if not os.path.exists(SONGS_JSON_FILE):
+            return jsonify([])
+        
+        with open(SONGS_JSON_FILE, 'r', encoding='utf-8') as f:
+            songs_data = json.load(f)
+        
+        # Return all songs (they're already in JSON format with ISO timestamps)
+        return jsonify(songs_data)
+    except (json.JSONDecodeError, IOError) as e:
+        print(f"Error reading full song history: {e}")
+        return jsonify([])
+
+
 def start_audio_capture():
     """Start the audio capture service."""
     global audio_capture, song_identifier

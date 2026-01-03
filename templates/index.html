@@ -914,6 +914,59 @@
             pointer-events: auto;
         }
 
+        .full-history-section {
+            margin-top: 3em;
+            padding: 2em;
+            background: rgba(0, 0, 0, 0.6);
+            border: 2px solid #fff;
+        }
+
+        .history-title {
+            font-family: 'Orbitron', monospace;
+            font-weight: 700;
+            font-size: 1.5em;
+            margin-bottom: 1em;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: #fff;
+        }
+
+        .history-list {
+            font-family: 'Share Tech Mono', monospace;
+            font-size: 0.9em;
+            line-height: 1.8;
+            color: #fff;
+            max-height: 400px;
+            overflow-y: auto;
+            padding: 1em;
+            background: rgba(0, 0, 0, 0.4);
+        }
+
+        .history-item {
+            padding: 0.3em 0;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .history-item:last-child {
+            border-bottom: none;
+        }
+
+        .history-song {
+            font-weight: 600;
+        }
+
+        .history-artist {
+            opacity: 0.8;
+            margin-left: 0.5em;
+        }
+
+        .history-time {
+            opacity: 0.6;
+            font-size: 0.85em;
+            margin-left: 1em;
+            float: right;
+        }
+
         .main-content {
             position: relative;
             z-index: 10;
@@ -1020,6 +1073,14 @@
                 <h2>LOADING...</h2>
                 <p>WAITING FOR SONG DATA</p>
             </div>
+            </div>
+            
+            <!-- Full History Text List -->
+            <div class="full-history-section">
+                <h3 class="history-title">FULL HISTORY</h3>
+                <div class="history-list" id="fullHistoryList">
+                    <p>LOADING...</p>
+                </div>
             </div>
         </div>
     </div>
@@ -1236,9 +1297,55 @@
                 });
         }
 
+        function fetchFullHistory() {
+            fetch('/api/songs/all')
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    updateFullHistoryList(data);
+                })
+                .catch(error => {
+                    console.error('ERROR FETCHING FULL HISTORY:', error);
+                    const historyList = document.getElementById('fullHistoryList');
+                    if (historyList) {
+                        historyList.innerHTML = '<p>ERROR LOADING HISTORY</p>';
+                    }
+                });
+        }
+
+        function updateFullHistoryList(songs) {
+            const historyList = document.getElementById('fullHistoryList');
+            if (!historyList) return;
+
+            if (!songs || songs.length === 0) {
+                historyList.innerHTML = '<p>NO HISTORY</p>';
+                return;
+            }
+
+            historyList.innerHTML = songs.map(song => {
+                const title = song.title || 'Unknown';
+                const artist = song.artist || 'Unknown Artist';
+                const timestamp = song.timestamp ? new Date(song.timestamp).toLocaleString() : 'Unknown time';
+                
+                return `
+                    <div class="history-item">
+                        <span class="history-song">${escapeHtml(title.toUpperCase())}</span>
+                        <span class="history-artist">${escapeHtml(artist.toUpperCase())}</span>
+                        <span class="history-time">${escapeHtml(timestamp)}</span>
+                    </div>
+                `;
+            }).join('');
+        }
+
         updateLastUpdateTime();
         fetchSongs(); // Initial load
+        fetchFullHistory(); // Initial load of full history
         setInterval(fetchSongs, 5000);
+        setInterval(fetchFullHistory, 30000); // Update full history every 30 seconds
         
         setInterval(() => {
             // Update relative timestamps every 30 seconds
