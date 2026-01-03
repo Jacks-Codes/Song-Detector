@@ -1236,80 +1236,9 @@
                 });
         }
 
-        // Sample data for preview/testing when server is not available
-        const sampleSongs = [
-            {
-                title: 'ALL I NEED',
-                artist: 'RADIOHEAD',
-                album: 'In Rainbows',
-                artwork: 'https://i.scdn.co/image/ab67616d0000b273c5649add07ed3720be9d5526',
-                timestamp: new Date().toISOString()
-            },
-            {
-                title: 'KID A',
-                artist: 'RADIOHEAD',
-                album: 'Kid A',
-                artwork: 'https://upload.wikimedia.org/wikipedia/en/b/b5/Radiohead.kida.albumart.jpg',
-                timestamp: new Date(Date.now() - 5 * 60000).toISOString()
-            },
-            {
-                title: 'LOW',
-                artist: 'DAVID BOWIE',
-                album: 'Low',
-                artwork: 'https://upload.wikimedia.org/wikipedia/en/4/46/LowCover.jpg',
-                timestamp: new Date(Date.now() - 12 * 60000).toISOString()
-            },
-            {
-                title: 'IN THE COURT OF THE CRIMSON KING',
-                artist: 'KING CRIMSON',
-                album: 'In the Court of the Crimson King',
-                artwork: 'https://upload.wikimedia.org/wikipedia/en/6/6a/InTheCourtOfTheCrimsonKing.jpg',
-                timestamp: new Date(Date.now() - 25 * 60000).toISOString()
-            },
-            {
-                title: 'MY BEAUTIFUL DARK TWISTED FANTASY',
-                artist: 'KANYE WEST',
-                album: 'My Beautiful Dark Twisted Fantasy',
-                artwork: 'https://upload.wikimedia.org/wikipedia/en/f/f0/My_Beautiful_Dark_Twisted_Fantasy.jpg',
-                timestamp: new Date(Date.now() - 38 * 60000).toISOString()
-            }
-        ];
-
-        // Try to fetch from server, fall back to sample data if unavailable
-        function initializeSongs() {
-            fetch('/api/songs')
-                .then(response => {
-                    if (response.ok) {
-                        return response.json().then(data => {
-                            if (data && data.length > 0) {
-                                // Use real data from server
-                                updateSongsList(data);
-                                updateStats(data);
-                                updateLastUpdateTime();
-                                // Set up polling
-                                setInterval(fetchSongs, 5000);
-                            } else {
-                                // Server available but no songs - use samples for demo
-                                updateSongsList(sampleSongs);
-                                updateStats(sampleSongs);
-                                updateLastUpdateTime();
-                            }
-                        });
-                    } else {
-                        throw new Error('Server not available');
-                    }
-                })
-                .catch(error => {
-                    // Server not available - use sample data for preview
-                    console.log('Server not available, using sample data for preview');
-                    updateSongsList(sampleSongs);
-                    updateStats(sampleSongs);
-                    updateLastUpdateTime();
-                });
-        }
-
         updateLastUpdateTime();
-        initializeSongs();
+        fetchSongs(); // Initial load
+        setInterval(fetchSongs, 5000);
         
         setInterval(() => {
             // Update relative timestamps every 30 seconds
@@ -1564,12 +1493,6 @@
             setTimeout(() => {
                 initGlitchShader();
                 initParticleSystem();
-                // Update glitch texture with first sample song artwork if available
-                setTimeout(() => {
-                    if (typeof sampleSongs !== 'undefined' && sampleSongs && sampleSongs[0] && sampleSongs[0].artwork) {
-                        updateGlitchTexture(sampleSongs[0].artwork);
-                    }
-                }, 500);
             }, 100);
         } else {
             console.error('Three.js not loaded');
